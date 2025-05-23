@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Admin Dashboard | DAVEY GRAVY</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <style>
+    
+  body {
+    padding-top: 6rem;
+    font-family: 'Karla', sans-serif;
+    color: var(--text-dark);
+    background: var(--bg-dark);
+    transition: background 0.3s, color 0.3s;
+  }
+  body.light {
+    background: var(--bg-light);
+    color: var(--text-light);
+  }
+
+  main {
+    max-width: 1200px;
+    margin: auto;
+    padding: 2rem;
+    display: grid;
+    gap: 2rem;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+  }
+
+  .card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  th, td {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    text-align: left;
+  }
+
+  th {
+    background: rgba(255,255,255,0.08);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+
+  td a {
+    color: var(--accent);
+  }
+
+  button {
+    padding: 0.4rem 0.75rem;
+    background: var(--accent);
+    border: none;
+    color: #000;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  button:hover {
+    background: #00c1ae;
+  }
+
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  /* Map */
+  #map {
+    width: 100%;
+    height: 400px;
+    border-radius: 10px;
+    margin-top: 1rem;
+  }
+
+  #visitorList {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+  }
+
+  #visitorList li {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+    border-bottom: 1px dashed rgba(255,255,255,0.1);
+  }
+
+  @media (max-width: 768px) {
+    .actions {
+      flex-direction: column;
+    }
+
+    table, thead, tbody, th, td, tr {
+      display: block;
+    }
+
+    tr {
+      margin-bottom: 1rem;
+    }
+
+    th {
+      display: none;
+    }
+
+    td {
+      border: none;
+      position: relative;
+      padding-left: 50%;
+    }
+
+    td:before {
+      content: attr(data-label);
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: bold;
+      color: var(--accent);
+    }
+  }
+
+
+  </style>
+
+  <!-- Leaflet CSS -->
+  <link 
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    integrity="sha256-sA+4jmu8M4LeEso8tjgz2YnCaIBsyVBaA8wSQTkP4pA="
+    crossorigin=""
+  />
+</head>
+<body class="loaded">
+
+  <%- include('partials/header', { active: null }) %>
+
+  <main>
+    <h1>🚀 Admin Dashboard</h1>
+
+    <!-- KPI Cards -->
+    <div class="stats-grid">
+      <div class="card">
+        <h3>Total Visits</h3>
+        <p><strong><%= stats.totalVisits %></strong></p>
+      </div>
+      <div class="card">
+        <h3>Unique Visitors</h3>
+        <p><strong><%= stats.totalUniqueVisitors %></strong></p>
+      </div>
+      <div class="card">
+        <h3>Avg Response Time</h3>
+        <p><strong><%= stats.avgResponseMs %> ms</strong></p>
+      </div>
+      <div class="card">
+        <h3>Unique Countries</h3>
+        <table>
+          <tr><th>Country</th><th>Count</th></tr>
+          <% stats.uniqueCountries.forEach(c => { %>
+            <tr><td><%= c._id || 'Unknown' %></td><td><%= c.count %></td></tr>
+          <% }) %>
+        </table>
+      </div>
+    </div>
+
+    <!-- Top Pages -->
+    <section class="card">
+      <h3>Top Pages</h3>
+      <table>
+        <tr><th>Path</th><th>Views</th></tr>
+        <% stats.topPages.forEach(p => { %>
+          <tr>
+            <td><a href="<%= p.path %>"><%= p.path %></a></td>
+            <td><%= p.count %></td>
+          </tr>
+        <% }) %>
+      </table>
+    </section>
+
+    <!-- Blog Views -->
+    <section class="card">
+      <h3>Blog Post Views</h3>
+      <table>
+        <tr><th>Slug</th><th>Views</th></tr>
+        <% stats.blogViews.forEach(b => { %>
+          <tr>
+            <td><%= b.path.split('/')[2] %></td>
+            <td><%= b.count %></td>
+          </tr>
+        <% }) %>
+      </table>
+    </section>
+
+    <!-- Real-time Map & Visitor Log -->
+    <section class="card">
+      <h3>Real-Time Visitor Map</h3>
+      <div id="map"></div>
+      <h3>Live Visitor Log</h3>
+      <ul id="visitorList"></ul>
+    </section>
+
+    <!-- Recent Visitors -->
+    <section class="card">
+      <h3>Recent Visitors</h3>
+      <table>
+        <tr><th>Time</th><th>Path</th><th>IP</th><th>Location</th><th>Browser</th><th>Resp (ms)</th></tr>
+        <% stats.recentVisits.forEach(v => { %>
+          <tr>
+            <td><%= v.createdAt.toLocaleString() %></td>
+            <td><code><%= v.path %></code></td>
+            <td><%= v.ip %></td>
+            <td><%= v.geo.country %> / <%= v.geo.city || '–' %></td>
+            <td><%= v.ua.browser %></td>
+            <td><%= v.responseTimeMs %></td>
+          </tr>
+        <% }) %>
+      </table>
+    </section>
+
+    <!-- Manage Blog Posts -->
+    <section class="card">
+      <h3>Manage Blog Posts</h3>
+      <table>
+        <tr><th>Title</th><th>Created</th><th>Actions</th></tr>
+        <% blogs.forEach(post => { %>
+          <tr>
+            <td><%= post.title %></td>
+            <td><%= post.createdAt.toLocaleDateString() %></td>
+            <td>
+              <a href="/blogs/<%= post.slug %>"><button>View</button></a>
+              <a href="/admin/edit/<%= post.slug %>?pass=daveygravy"><button>Edit</button></a>
+              <form action="/admin/delete/<%= post.slug %>?pass=daveygravy"
+                    method="POST" style="display:inline">
+                <button onclick="return confirm('Delete?')">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </table>
+    </section>
+  </main>
+
+  <%- include('partials/footer') %>
+
+  <!-- Socket.IO client -->
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-kxZiZfXhsgwqKOsotqc3Qn/ZOkTPJXVX+vKy+oU4y+o="
+    crossorigin=""
+  ></script>
+  <script>
+    // Connect to admin namespace
+    const socket = io('/admin');
+
+    // Initialize the map
+    const map = L.map('map').setView([20, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const visitorList = document.getElementById('visitorList');
+
+    socket.on('new-visit', data => {
+      // basic country-code to coords map (extend as needed)
+      const centers = {
+        US: [37.09, -95.71],
+        CA: [56.13, -106.34],
+        GB: [55.37, -3.43],
+        IN: [20.59, 78.96]
+      };
+      const latlng = centers[data.country] || [20, 0];
+
+      L.circleMarker(latlng, {
+        radius: 6,
+        fillColor: '#00dfc4',
+        color: '#fff',
+        weight: 1,
+        fillOpacity: 0.8
+      })
+      .addTo(map)
+      .bindPopup(`${data.city}, ${data.country}<br>${new Date(data.timestamp).toLocaleTimeString()}`);
+
+      // prepend to the list
+      const li = document.createElement('li');
+      li.textContent = 
+        `${new Date(data.timestamp).toLocaleTimeString()} — ${data.city || '–'}, ${data.country} — ${data.ip}`;
+      visitorList.prepend(li);
+    });
+  </script>
+</body>
+</html>

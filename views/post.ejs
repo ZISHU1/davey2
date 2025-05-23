@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= post.title %> | Blog</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <%- include('partials/header', { active: 'blogs' }) %>
+
+  <main style="padding-top:6rem; max-width:800px; margin:auto;" data-aos="fade-up">
+    <h1><%= post.title %></h1>
+    <p><small>Published: <%= post.createdAt.toDateString() %></small></p>
+    <div><%- post.content %></div>
+
+    <hr style="margin: 2rem 0;" />
+
+    <section id="comments">
+      <h3>Leave a Comment</h3>
+      <form action="/blogs/<%= post.slug %>/comment" method="POST" style="margin-bottom:2rem;">
+        <input type="text" name="name" placeholder="Your name" required>
+        <textarea name="message" rows="4" placeholder="Your comment" required></textarea>
+        <button class="button">Submit</button>
+      </form>
+
+      <h3>Comments</h3>
+      <% if (!post.comments || post.comments.length === 0) { %>
+        <p>No comments yet.</p>
+      <% } else { %>
+        <% post.comments.forEach(c => { %>
+          <div style="margin-bottom:1rem; padding:0.75rem; background:#111; border-radius:6px;">
+            <strong><%= c.name %></strong> on <%= new Date(c.createdAt).toLocaleDateString() %>
+            <p><%= c.message %></p>
+          </div>
+        <% }) %>
+      <% } %>
+    </section>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

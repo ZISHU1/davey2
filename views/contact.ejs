@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact | DAVEY GRAVY</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="">
+
+
+<%- include('partials/header', { active:'contact' }) %>
+
+<main style="padding-top:6rem; max-width:600px; margin:auto;" data-aos="fade-up">
+  <h1>Contact Me</h1>
+  <form action="/contact" method="POST" style="display:flex;flex-direction:column;gap:1rem;">
+    <input type="text" name="name" placeholder="Your Name" required />
+    <input type="email" name="email" placeholder="Your Email" required />
+    <textarea name="message" rows="6" placeholder="Your Message" required></textarea>
+    <button type="submit" class="button">Send Message</button>
+  </form>
+</main>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,34 @@
+<!-- Preloader -->
+<div id="preloader">
+  <div class="spinner"></div>
+</div>
+
+<header>
+  <div class="nav-container">
+    <!-- Logo now links to homepage -->
+    <a class="logo" href="/">DAVEY GRAVY</a>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle" onclick="navToggle()">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- Navigation -->
+    <nav id="mainNav">
+      <a href="/blogs" class="<%= active === 'blogs' ? 'active' : '' %>">Blogs</a>
+      <a href="/about" class="<%= active === 'about' ? 'active' : '' %>">About</a>
+      <a href="/portfolio" class="<%= active === 'portfolio' ? 'active' : '' %>">Portfolio</a>
+      <a href="/contact" class="<%= active === 'contact' ? 'active' : '' %>">Contact</a>
+
+      <!-- Show theme button only on mobile inside nav -->
+      <button id="mobileThemeBtn" onclick="toggleTheme()">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </nav>
+
+    <!-- Desktop theme toggle button -->
+    <button id="themeBtn" onclick="toggleTheme()">
+      <i class="fa-solid fa-moon"></i>
+    </button>
+  </div>
+</header>
