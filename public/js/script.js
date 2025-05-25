@@ -132,3 +132,68 @@ function scrollSlider(direction) {
 
   slider.scrollTo({ left: 0, behavior: 'instant' });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const slider    = document.getElementById('slider');
+  const prevBtn   = document.getElementById('prevBtn');
+  const nextBtn   = document.getElementById('nextBtn');
+  let isDragging  = false;
+  let startX      = 0;
+  let scrollLeft = 0;
+  let autoSlide;
+
+  // Arrow buttons scroll by one slide width
+  const slideWidth = () => slider.querySelector('.slide').offsetWidth + parseFloat(getComputedStyle(slider).gap);
+
+  function slideBy(direction) {
+    slider.scrollBy({ left: direction * slideWidth(), behavior: 'smooth' });
+    resetAutoSlide();
+  }
+  prevBtn.addEventListener('click', () => slideBy(-1));
+  nextBtn.addEventListener('click', () => slideBy(1));
+
+  // Swipe support
+  slider.addEventListener('pointerdown', e => {
+    isDragging = true;
+    slider.style.scrollBehavior = 'auto';
+    startX = e.clientX;
+    scrollLeft = slider.scrollLeft;
+    clearInterval(autoSlide);
+  });
+  slider.addEventListener('pointermove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    slider.scrollLeft = scrollLeft - dx;
+  });
+  slider.addEventListener('pointerup', () => {
+    isDragging = false;
+    snapToClosest();
+    slider.style.scrollBehavior = 'smooth';
+    resetAutoSlide();
+  });
+  slider.addEventListener('pointerleave', () => {
+    if (isDragging) {
+      isDragging = false;
+      snapToClosest();
+      slider.style.scrollBehavior = 'smooth';
+      resetAutoSlide();
+    }
+  });
+
+  // Snap to closest slide
+  function snapToClosest() {
+    const slideW = slideWidth();
+    const idx = Math.round(slider.scrollLeft / slideW);
+    slider.scrollTo({ left: idx * slideW, behavior: 'smooth' });
+  }
+
+  // Auto-slide
+  function startAutoSlide() {
+    autoSlide = setInterval(() => slideBy(1), 5000);
+  }
+  function resetAutoSlide() {
+    clearInterval(autoSlide);
+    startAutoSlide();
+  }
+  startAutoSlide();
+});

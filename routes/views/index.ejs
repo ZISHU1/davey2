@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home | DAVEY GRAVY</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+  <!-- AOS for scroll animations -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<%- include('partials/header', { active: 'home' }) %>
+
+<!-- Hero -->
+<div class="hero" data-aos="fade-in">
+  <h1>Capturing Moments That Matter</h1>
+</div>
+
+<!-- Carousel Section -->
+<section class="section" data-aos="fade-up">
+  <h2 class="section-title">Explore Projects</h2>
+
+  <div class="slider-container">
+    <button class="slider-arrow slider-arrow--left" id="prevBtn">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+
+    <div class="slider" id="slider">
+      <% const projects = [
+        'Travel Alberta','Neo Financial','Tourism SK','Urban Doc',
+        'Nature Walks','Mountain Peaks','City Skylines','Wildlife'
+      ]; %>
+      <% projects.forEach((title, idx) => {
+           const seed = 'project' + (idx + 1);
+      %>
+        <div class="slide">
+          <img src="https://picsum.photos/seed/<%= seed %>/600/400" alt="<%= title %>" />
+          <div class="slide-content">
+            <h4><%= title %></h4>
+            <a href="/projects/<%= title.toLowerCase().replace(/\\s+/g,'-') %>" class="btn">View Project</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+    <button class="slider-arrow slider-arrow--right" id="nextBtn">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </div>
+</section>
+
+
+<%- include('partials/footer') %>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>AOS.init({ duration: 800 });</script>
+<script src="/js/script.js"></script>
+</body>
+</html>
